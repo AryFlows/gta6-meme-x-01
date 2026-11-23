@@ -1,16 +1,10 @@
-import { copyFileSync, mkdirSync, readFileSync } from "node:fs";
+import { copyFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 
-// Copy POST.json from the repository root into the output directory.
-// That is all this program does: the house reads the post itself from X.
-const repoDir = process.env.MAKEFUN_BOT_DIR ?? ".";
+// The entry is the X post named by POST.json; the grader reads the post
+// itself from X. This program only hands the post file (and the meme
+// picture) to the output directory.
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
-
-const postPath = join(repoDir, "POST.json");
-const post = JSON.parse(readFileSync(postPath, "utf8"));
-if (typeof post !== "object" || post === null || typeof post.url !== "string") {
-  throw new Error("POST.json must be an object with a url string");
-}
-
 mkdirSync(outDir, { recursive: true });
-copyFileSync(postPath, join(outDir, "POST.json"));
+copyFileSync(join(import.meta.dirname, "POST.json"), join(outDir, "POST.json"));
+copyFileSync(join(import.meta.dirname, "meme.png"), join(outDir, "meme.png"));
